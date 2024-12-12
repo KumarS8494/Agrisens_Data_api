@@ -1,2 +1,3 @@
 agrisens_ENV/
-config/
+# Ignore all `.env` files
+.env
