@@ -1,3 +1,4 @@
 agrisens_ENV/
 # Ignore all `.env` files
 .env
+saved_images/
