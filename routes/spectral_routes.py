@@ -14,14 +14,12 @@ if not os.path.exists(IMAGE_FOLDER):
     os.makedirs(IMAGE_FOLDER)
 
 def save_image_as_base64(file):
-    """Encode image file as Base64."""
     try:
         return base64.b64encode(file.read()).decode("utf-8")
     except Exception as e:
         raise ValueError(f"Error encoding image: {e}")
 
 def save_base64_as_file(base64_string, filename):
-    """Save Base64-encoded image as a file."""
     try:
         image_data = base64.b64decode(base64_string)
         file_path = os.path.join(IMAGE_FOLDER, filename)
@@ -33,7 +31,6 @@ def save_base64_as_file(base64_string, filename):
 
 @bp.route("/add", methods=["POST"])
 def add_data():
-    """Add a new Spectral_Values document with optional image upload."""
     try:
         data = request.form.to_dict()
         is_valid, error = validate_data(data)
@@ -53,7 +50,6 @@ def add_data():
 
 @bp.route("/data", methods=["GET"])
 def get_all_data():
-    """Get all data and save images as files."""
     try:
         data = list(collection.find({}, {"_id": 0}))
         for item in data:
@@ -62,8 +58,8 @@ def get_all_data():
                 sample_id = item.get("Sample_Id", "unknown")
                 filename = f"{sample_id}.jpg"
                 file_path = save_base64_as_file(item["image"], filename)
-                item["image_path"] = f"/spectral/images/{filename}"  # Add path to response
-                del item["image"]  # Remove Base64 data to clean up response
+                item["image_path"] = f"/spectral/images/{filename}" 
+                del item["image"] 
 
         return jsonify(data), 200
     except Exception as e:
@@ -91,7 +87,6 @@ def get_data_by_sample_id(sample_id):
 
 @bp.route("/images/<filename>", methods=["GET"])
 def get_image(filename):
-    """Serve the saved image file."""
     try:
         return send_from_directory(IMAGE_FOLDER, filename)
     except Exception as e:
